@@ -1,19 +1,19 @@
 {
   "name": "parser",
   "version": "0.0.1",
-  "description": "Xml parser",
+  "description": "XML 2 JSON parser script",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [
     "xml",
     "json",
     "parser"
   ],
   "author": "Colúm Bennett",
+  "git": "git@github.com:col1985/xml2json-parser.git",
   "license": "public",
   "dependencies": {
-    "xml2js": "^0.4.4"
+    "xml2js": "^0.4.4",
+    "underscore": "^1.7.0",
+    "findit": "^2.0.0",
   }
 }

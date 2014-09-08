@@ -1,3 +1,5 @@
-var fs = require('fs');
-var xml2js = require('xml2js');
-var finder = require('findit');
+#!/usr/bin/env node
+
+var parseXml2Json = require('./parser.js');
+
+parseXml2Json();
