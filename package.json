@@ -1,5 +1,5 @@
 {
-  "name": "parser",
+  "name": "xml2json-parser",
   "version": "0.0.1",
   "description": "XML 2 JSON parser script",
   "main": "index.js",
