@@ -8,9 +8,14 @@
     var path = require('path');
     var _ = require('underscore');
 
-    // function recursively searchs for a directory
-    // labelled xml, then checks for `.xml` files
-    // and returns array of each file path
+    /**
+     * @function getXmlFilePaths
+     * @desc function recursively searchs for a directory
+     * labelled xml, then checks for `.xml` files
+     * and returns array of each file path
+     * @param {method} callback
+     * @return callback returns array of xml file paths
+     */
     var getXmlFilePaths = function (callback) {
         var xmlFilePaths = [];
 
@@ -38,21 +43,33 @@
         // array via callback
         finder.on('end', function () {
             if (xmlFilePaths.length > 0) {
-                callback(xmlFilePaths);
+                return callback(xmlFilePaths);
             } else {
                 console.log('Oops!! No xml file paths to return.');
             }
         });
     };
 
-    // removes directory and suffix
-    // from file path and returns name
-    var formatFileName = function (filename) {
-        var dotIndex = filename.indexOf('.');
-        var name = filename.substring(4, dotIndex);
+    /**
+     * @function getFileName
+     * @desc removes directory and suffix from file path and returns name
+     * @param {String} filePath
+     * @return fileName
+     */
+    var getFileName = function (filePath) {
+        var dotIndex = filePath.indexOf('.');
+        var name = filePath.substring(4, dotIndex);
         return name;
     };
 
+    /**
+     * @function writeJsonFile
+     * @desc writes data to single file to a specified directory
+     * @param {String} dir
+     * @param {String} name
+     * @param {String} ext
+     * @param {String} data
+     */
     var writeJsonFile = function (dir, name, ext, data) {
         fs.writeFile(dir + name + ext, data, function (err) {
             if (err) {
@@ -62,33 +79,48 @@
         });
     };
 
-    // function writes parsed xml json file
-    // to json dir at root of project file tree
-    var createOutputFiles = function (filename, dir, ext, data) {
-        var name = formatFileName(filename);
+    /**
+     * @function createOutputFiles
+     * @desc checks for existence of output directory to write files to.
+     * If none creates directory specified. If no directory named crates
+     * default json at root of project file tree.
+     * @param {String} dir
+     * @param {String} fileName
+     * @param {String} ext
+     * @param {String} data
+     */
+    var createOutputFiles = function (dir, fileName, ext, data) {
+        var name = getFileName(fileName);
+        dir = dir || './json';
 
         // check output directory exists
         if (fs.existsSync(dir)) {
             writeJsonFile(dir, name, ext, data);
         } else {
-            //
+            // if not create directory
             fs.mkdirSync(dir, '0777');
-
             writeJsonFile(dir, name, ext, data);
         }
     };
 
-    // function takes array of xml filePaths
-    // parses to json and creates file
+    /**
+     * @function parser
+     * @desc main function, takes array of xml filePaths parses xml to json
+     * and passes data to output handler functions
+     * @param {Array} filePaths
+     */
     var parser = function (filePaths) {
 
         // processor function for parser
         // to tidy tag names
         function formatTagName(name) {
             var index = name.indexOf(':');
+
             if (index !== -1) {
                 var tagName = name.substr(index + 1, name.length);
                 return tagName;
+            } else {
+                return name;
             }
         }
 
@@ -110,8 +142,8 @@
                 var body = raw['body'][0];
 
                 json = JSON.stringify(body, null, 2);
-                createOutputFiles(path, './json/', '.json', json);
-                console.log('File ' + path + ' was successfully read, parsed and formated.\n');
+                createOutputFiles(path, '', '.json', json);
+                // console.log('File ' + path + ' was successfully read, parsed and formated.\n');
             });
         }
 
@@ -133,7 +165,10 @@
         }
     };
 
-    // bring it all together
+    /**
+     * @function init
+     * @desc exported function bringing all functionality together to create output files
+     */
     var init = function () {
         getXmlFilePaths(function (filePaths) {
             parser(filePaths);
