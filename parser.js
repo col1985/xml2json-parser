@@ -9,7 +9,7 @@
     var _ = require('underscore');
 
     // function recursively searchs for a directory
-    // labelled xml, then checks for .xml files
+    // labelled xml, then checks for `.xml` files
     // and returns array of each file path
     var getXmlFilePaths = function (callback) {
         var xmlFilePaths = [];
@@ -45,7 +45,7 @@
         });
     };
 
-    // removes directory and extension
+    // removes directory and suffix
     // from file path and returns name
     var formatFileName = function (filename) {
         var dotIndex = filename.indexOf('.');
@@ -53,12 +53,8 @@
         return name;
     };
 
-    // function writes parsed xml json file
-    // to json dir at root of project file tree
-    var writeJsonToFile = function (filename, data) {
-        var name = formatFileName(filename);
-
-        fs.writeFile('./json/' + name + '.json', data, function (err) {
+    var writeJsonFile = function (dir, name, ext, data) {
+        fs.writeFile(dir + name + ext, data, function (err) {
             if (err) {
                 console.log('Error writing json file', err);
             }
@@ -66,9 +62,25 @@
         });
     };
 
+    // function writes parsed xml json file
+    // to json dir at root of project file tree
+    var createOutputFiles = function (filename, dir, ext, data) {
+        var name = formatFileName(filename);
+
+        // check output directory exists
+        if (fs.existsSync(dir)) {
+            writeJsonFile(dir, name, ext, data);
+        } else {
+            //
+            fs.mkdirSync(dir, '0777');
+
+            writeJsonFile(dir, name, ext, data);
+        }
+    };
+
     // function takes array of xml filePaths
     // parses to json and creates file
-    var parseFiles = function (filePaths) {
+    var parser = function (filePaths) {
 
         // processor function for parser
         // to tidy tag names
@@ -80,43 +92,51 @@
             }
         }
 
+        // parse a single xml file
+        function parseFile(path) {
+            var fileData = fs.readFileSync(path, 'ascii');
+            var json = null;
+
+            // instantciate parser
+            var parser = new xml2js.Parser({
+                trim: true,
+                normalizeTags: true,
+                ignoreAttrs: true,
+                tagNameProcessors: [formatTagName],
+            });
+
+            parser.parseString(fileData.substring(0, fileData.length), function (err, result) {
+                var raw = result['envelope'];
+                var body = raw['body'][0];
+
+                json = JSON.stringify(body, null, 2);
+                createOutputFiles(path, './json/', '.json', json);
+                console.log('File ' + path + ' was successfully read, parsed and formated.\n');
+            });
+        }
+
         // some defensive checking
         if (!filePaths instanceof Array) {
-            return;
+            return false;
         } else {
-            // iterate over array and parse
-            // xml file to json
+            // iterate over array and
+            // pass xml file path to
+            // parsing fn
             _.each(filePaths, function (path) {
                 try {
-                    var fileData = fs.readFileSync(path, 'ascii');
-                    var json = null;
-
-                    var parser = new xml2js.Parser({
-                        trim: true,
-                        normalizeTags: true,
-                        ignoreAttrs: true,
-                        tagNameProcessors: [formatTagName],
-                    });
-
-                    parser.parseString(fileData.substring(0, fileData.length), function (err, result) {
-                        var raw = result['envelope'];
-                        var body = raw['body'][0];
-                        json = JSON.stringify(body, null, 2);
-                        writeJsonToFile(path, json);
-                    });
-
-                    console.log('File ' + path + '/ was successfully read, parsed and formated.\n');
-                } catch (ex) {
-                    console.log('Unable to read file ' + path + '.');
-                    console.log(ex);
+                    parseFile(path);
+                } catch (e) {
+                    console.log('Unable to read file ' + path);
+                    console.log(e);
                 }
             });
         }
     };
 
+    // bring it all together
     var init = function () {
         getXmlFilePaths(function (filePaths) {
-            parseFiles(filePaths);
+            parser(filePaths);
         });
     };
 
