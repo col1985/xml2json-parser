@@ -1,5 +1,11 @@
 (function () {
 
+    /**
+     * @module Xml-Parser
+     * @author Colúm Bennett
+     * @overview text
+     */
+
     'use strict';
 
     var fs = require('fs');
@@ -10,11 +16,9 @@
 
     /**
      * @function getXmlFilePaths
-     * @desc function recursively searchs for a directory
-     * labelled xml, then checks for `.xml` files
-     * and returns array of each file path
+     * @desc function recursively searchs for a directory labelled xml, then checks for `.xml` files and returns array of each file path
      * @param {method} callback
-     * @return callback returns array of xml file paths
+     * @returns {method} callback returns array of xml file paths
      */
     var getXmlFilePaths = function (callback) {
         var xmlFilePaths = [];
