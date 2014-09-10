@@ -3,20 +3,20 @@ Xml-Parser
 
 Module Description
 -----------------------------
-Module will recursively search through project file tree for `xml` directory. It will then create an array of absolute paths for all
-`xml` files found in that directory. The module then loops through the path array, reading each xml file associated with the given path, formating
-the tag names and parsing to `json` using xml2js mode module. This module will then write each json string to a file using same filename as orignial
-xml, to a default `json` directory at root of project.
+Module will recursively search through project file tree for an `xml` directory. It will then create an array of absolute paths for all `.xml` files found in the `xml` directory. The module then loops through the returned path array, reading each `xml` file associated with the given path, formating
+the tag names if required and parsing to `json` string using xml2js node module. This module will then write each `json` string to a file using same filename as orignial
+`xml` file, to a default `json` directory at root of project.
+
 
 ###Why?
 
-Project I am about to start working on is predominantly using Xml in it's web services. As I prefer JSON myself I decided it would be easier to understand the required data structures if they are in JSON format.
+The project I am about to start working on is predominantly using `xml` in it's web services. As I prefer `json` myself I decided it would be easier to understand the required data structures if they are in JSON format.
 
 Why not! It's just easier to read!!
 
 ###Prerequisites
 
-+ You must have your xml files in a directory labelled, you guessed it xml at the root of your project.
++ You must have your an `xml` directory at the root of your project, containing basic `xml` documents or `xmlns` documents contained in it.
 
 ---
 
