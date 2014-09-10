@@ -82,8 +82,9 @@
         fs.writeFile(dir + name + ext, data, function (err) {
             if (err) {
                 console.log('Error writing json file', err);
+            } else {
+                console.log(name + '.json has been saved!\n');
             }
-            console.log(name + '.json has been saved!\n');
         });
     };
 
@@ -99,7 +100,6 @@
      */
     var createOutputFiles = function (dir, fileName, ext, data) {
         var name = getFileName(fileName);
-        dir = dir || './json';
 
         // check output directory exists
         if (fs.existsSync(dir)) {
@@ -151,7 +151,7 @@
                 var body = raw['body'][0];
 
                 json = JSON.stringify(body, null, 2);
-                createOutputFiles(path, '', '.json', json);
+                createOutputFiles('./json/', path, '.json', json);
                 // console.log('File ' + path + ' was successfully read, parsed and formated.\n');
             });
         }

@@ -1,0 +1,46 @@
+{
+  "readstandardjobrequestwsv1": [
+    {
+      "wsrequesttoken": [
+        {
+          "usertoken": [
+            {
+              "authenicated": [
+                "true"
+              ],
+              "user": [
+                ""
+              ]
+            }
+          ],
+          "requestid": [
+            "?"
+          ],
+          "requesttimestamp": [
+            "2014-08-14T00:00:00.Z"
+          ]
+        }
+      ],
+      "methodparameters": [
+        {
+          "districtcode": [
+            "123A"
+          ],
+          "standardjobno": [
+            "031256"
+          ]
+        }
+      ],
+      "attributestoreturn": [
+        {
+          "accountcode": [
+            "ABC123"
+          ],
+          "accountdesc": [
+            "bla bla bla bla bla"
+          ]
+        }
+      ]
+    }
+  ]
+}
