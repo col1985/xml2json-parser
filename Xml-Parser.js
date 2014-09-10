@@ -1,10 +1,13 @@
-(function () {
+/**
+ * @module Xml-Parser
+ * @author Colúm Bennett
+ * @description Module will recursively search through project file tree for `xml` directory. It will then create an array of absolute paths for all
+ * `xml` files found in that directory. The module then loops through the path array, reading each xml file associated with the given path, formating
+ * the tag names and parsing to `json` using xml2js mode module. This module will then write each json string to a file using same filename as orignial
+ * xml, to a default `json` directory at root of project.
+ */
 
-    /**
-     * @module Xml-Parser
-     * @author Colúm Bennett
-     * @overview text
-     */
+(function () {
 
     'use strict';
 
@@ -16,9 +19,10 @@
 
     /**
      * @function getXmlFilePaths
-     * @desc function recursively searchs for a directory labelled xml, then checks for `.xml` files and returns array of each file path
-     * @param {method} callback
-     * @returns {method} callback returns array of xml file paths
+     * @desc function recursively searchs for a directory labelled xml,
+     * then checks for `.xml` files and returns array of each file path.
+     * @param {method} callback method containing array of path return once criteria has been statisfied.
+     * @returns {method} callback returns array of xml file paths.
      */
     var getXmlFilePaths = function (callback) {
         var xmlFilePaths = [];
@@ -56,9 +60,9 @@
 
     /**
      * @function getFileName
-     * @desc removes directory and suffix from file path and returns name
-     * @param {String} filePath
-     * @return fileName
+     * @desc Removes directory and suffix from file path and returns formated name.
+     * @param {String} filePath Path to xml files located in xml directory.
+     * @returns {String} fileName formated file name.
      */
     var getFileName = function (filePath) {
         var dotIndex = filePath.indexOf('.');
@@ -68,11 +72,11 @@
 
     /**
      * @function writeJsonFile
-     * @desc writes data to single file to a specified directory
-     * @param {String} dir
-     * @param {String} name
-     * @param {String} ext
-     * @param {String} data
+     * @desc Writes data to single file to a specified directory
+     * @param {String} dir Name of output directory to write file to.
+     * @param {String} name Name of file minus original extension name.
+     * @param {String} ext New file extension of output file.
+     * @param {String} data Stringified JSON data to write to output file.
      */
     var writeJsonFile = function (dir, name, ext, data) {
         fs.writeFile(dir + name + ext, data, function (err) {
@@ -85,13 +89,13 @@
 
     /**
      * @function createOutputFiles
-     * @desc checks for existence of output directory to write files to.
-     * If none creates directory specified. If no directory named crates
+     * @desc Checks for existence of output directory to write files to.
+     * If none creates directory specified. If no directory named fn creates
      * default json at root of project file tree.
-     * @param {String} dir
-     * @param {String} fileName
-     * @param {String} ext
-     * @param {String} data
+     * @param {String} dir Name of output directory to write file to.
+     * @param {String} fileName Name of file minus original extension name.
+     * @param {String} ext New file extension of output file.
+     * @param {String} data Stringified JSON data to write to output file.
      */
     var createOutputFiles = function (dir, fileName, ext, data) {
         var name = getFileName(fileName);
@@ -109,9 +113,10 @@
 
     /**
      * @function parser
-     * @desc main function, takes array of xml filePaths parses xml to json
-     * and passes data to output handler functions
-     * @param {Array} filePaths
+     * @desc Main function, takes array of xml filePaths, loops
+     * through array and reads each files data parsing from `xml` to
+     * `json` string. The passes stringified data to output handler functions.
+     * @param {Array} filePaths Array of strings containing absolute file paths.
      */
     var parser = function (filePaths) {
 
