@@ -1,0 +1,23 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ReadStandardJobRequestWSV1>
+         <WSRequestToken>
+            <UserToken>
+               <authenicated>false</authenicated>
+               <User organisation="?" instance="?" application="?" component="?" applicationDomain="?" userID="?" sessionID="?" conversationID="?" messageID="?"/>
+            </UserToken>
+            <RequestID>?</RequestID>
+            <RequestTimeStamp>2014-08-14T00:00:00.Z</RequestTimeStamp>
+         </WSRequestToken>
+         <MethodParameters>
+            <DistrictCode>456B</DistrictCode>
+            <StandardJobNo>145628</StandardJobNo>
+         </MethodParameters>
+         <AttributesToReturn>
+            <AccountCode>CBA123</AccountCode>
+            <AccountDesc>bla bla bla bla bla</AccountDesc>
+         </AttributesToReturn>
+      </ReadStandardJobRequestWSV1>
+   </soapenv:Body>
+</soapenv:Envelope>
