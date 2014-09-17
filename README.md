@@ -14,10 +14,6 @@ The project I am about to start working on is predominantly using `xml` in it's 
 
 Why not! It's just easier to read!!
 
-###Prerequisites
-
-+ You must have your an `xml` directory at the root of your project, containing basic `xml` documents or `xmlns` documents contained in it.
-
 ---
 
 getXmlFilePaths(callback) 

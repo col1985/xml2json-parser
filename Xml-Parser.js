@@ -24,15 +24,13 @@
      * @param {method} callback method containing array of path return once criteria has been statisfied.
      * @returns {method} callback returns array of xml file paths.
      */
-    var getXmlFilePaths = function (callback) {
+    function getXmlFilePaths(callback) {
         var xmlFilePaths = [];
 
         // search for directory labeled xml
         finder.on('directory', function (dir, stat, stop) {
             if (dir === 'node_modules' || dir === '.git') {
                 stop();
-            } else if (dir === 'xml') {
-                console.log('Directory :: ' + dir + '/\n');
             }
         });
 
@@ -56,7 +54,7 @@
                 console.log('Oops!! No xml file paths to return.');
             }
         });
-    };
+    }
 
     /**
      * @function getFileName
@@ -64,11 +62,11 @@
      * @param {String} filePath Path to xml files located in xml directory.
      * @returns {String} fileName formated file name.
      */
-    var getFileName = function (filePath) {
+    function getFileName(filePath) {
         var dotIndex = filePath.indexOf('.');
         var name = filePath.substring(4, dotIndex);
         return name;
-    };
+    }
 
     /**
      * @function writeJsonFile
@@ -78,7 +76,7 @@
      * @param {String} ext New file extension of output file.
      * @param {String} data Stringified JSON data to write to output file.
      */
-    var writeJsonFile = function (dir, name, ext, data) {
+    function writeJsonFile(dir, name, ext, data) {
         fs.writeFile(dir + name + ext, data, function (err) {
             if (err) {
                 console.log('Error writing json file', err);
@@ -86,7 +84,7 @@
                 console.log(name + '.json has been saved!\n');
             }
         });
-    };
+    }
 
     /**
      * @function createOutputFiles
@@ -98,7 +96,7 @@
      * @param {String} ext New file extension of output file.
      * @param {String} data Stringified JSON data to write to output file.
      */
-    var createOutputFiles = function (dir, fileName, ext, data) {
+    function createOutputFiles(dir, fileName, ext, data) {
         var name = getFileName(fileName);
 
         // check output directory exists
@@ -109,7 +107,7 @@
             fs.mkdirSync(dir, '0777');
             writeJsonFile(dir, name, ext, data);
         }
-    };
+    }
 
     /**
      * @function parser
@@ -118,7 +116,7 @@
      * `json` string. The passes stringified data to output handler functions.
      * @param {Array} filePaths Array of strings containing absolute file paths.
      */
-    var parser = function (filePaths) {
+    function parser(filePaths) {
 
         // processor function for parser
         // to tidy tag names
@@ -172,17 +170,17 @@
                 }
             });
         }
-    };
+    }
 
     /**
      * @function init
      * @desc exported function bringing all functionality together to create output files
      */
-    var init = function () {
+    function init() {
         getXmlFilePaths(function (filePaths) {
             parser(filePaths);
         });
-    };
+    }
 
     module.exports = init;
 })();

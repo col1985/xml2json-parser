@@ -1,7 +1,7 @@
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
    <soapenv:Header/>
    <soapenv:Body>
-      <ReadStandardJobRequestWSV1>
+      <ReadRequest>
          <WSRequestToken>
             <UserToken>
                <authenicated>false</authenicated>
@@ -12,12 +12,12 @@
          </WSRequestToken>
          <MethodParameters>
             <DistrictCode>456B</DistrictCode>
-            <StandardJobNo>145628</StandardJobNo>
+            <No>145628</No>
          </MethodParameters>
          <AttributesToReturn>
             <AccountCode>CBA123</AccountCode>
             <AccountDesc>bla bla bla bla bla</AccountDesc>
          </AttributesToReturn>
-      </ReadStandardJobRequestWSV1>
+      </ReadRequest>
    </soapenv:Body>
 </soapenv:Envelope>
