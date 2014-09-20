@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require('./Xml-Parser.js')();
+require('./xmlFile2JsonFile.js')();

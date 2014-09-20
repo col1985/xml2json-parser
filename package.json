@@ -1,16 +1,29 @@
 {
-  "name": "xml2json-parser",
+  "name": "xmlFile2JsonFile",
   "version": "0.0.1",
-  "description": "XML 2 JSON parser script",
-  "main": "index.js",
+  "author": "Colúm Bennett",
+  "email": "col1985@gmail.com",
+  "description": "Searchs for xml files in project, parses to JSON and writes to JSON file",
+  "homepage": "https://github.com/col1985/xml2json-parser",
+  "main": "xmlFile2jsonFile.js",
   "keywords": [
     "xml",
     "json",
-    "parser"
+    "parser",
+    "xml-file",
+    "json-file"
   ],
-  "author": "Colúm Bennett",
-  "git": "git@github.com:col1985/xml2json-parser.git",
-  "license": "public",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/col1985/xml2json-parser.git"
+  },
+  "bugs": {
+    "url": "https://github.com/col1985/xml2json-parser/issues"
+  },
+  "licenses": [{
+    "type": "MIT",
+    "url": "https://github.com/col1985/xml2json-parser/master/LICENSE"
+  }],
   "dependencies": {
     "xml2js": "^0.4.4",
     "underscore": "^1.7.0",

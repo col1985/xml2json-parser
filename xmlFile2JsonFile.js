@@ -1,5 +1,5 @@
 /**
- * @module Xml-Parser
+ * @module xmlFile2jsonFile
  * @author Colúm Bennett
  * @description Module will recursively search through project file tree for an `xml` directory. It will then create an array of absolute paths for all
  * `.xml` files found in the `xml` directory. The module then loops through the returned path array, reading each `xml` file associated with the given path, formating
