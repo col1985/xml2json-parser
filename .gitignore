@@ -132,6 +132,9 @@ gen/
 
 # Local configuration file (sdk path, etc)
 local.properties
+
+
 json
+*.log
 # xml
 
