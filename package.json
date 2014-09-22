@@ -1,11 +1,11 @@
 {
-  "name": "xmlFile2JsonFile",
+  "name": "xml2jsonfile",
   "version": "0.0.1",
   "author": "Colúm Bennett",
   "email": "col1985@gmail.com",
   "description": "Searchs for xml files in project, parses to JSON and writes to JSON file",
   "homepage": "https://github.com/col1985/xml2json-parser",
-  "main": "xmlFile2jsonFile.js",
+  "main": "xml2jsonfile.js",
   "keywords": [
     "xml",
     "json",

@@ -1,4 +1,4 @@
-xmlFile2JsonFile
+xml2jsonfile
 ====
 
 ###Module Description
@@ -11,16 +11,20 @@ I wrote this to help analyze request and responses in `xml` format for a project
 
 Why not! JSON is just easier to read! :)
 
-This is my first node module and an ongoing work in progress, however please feel to create a Pull Request or raise an issue.
+This is my first node module and a work in progress, however please feel to create a Pull Request or raise an issue.
 
 ---
 
 ####How to use!
 
+```bash
+    npm install xml2jsonfile
+```
+
 ```javascript
     
     // require module    
-    var createJsonFromXml = require('xmlFile2JsonFile');
+    var createJsonFromXml = require('xml2jsonfile');
 
     // invoke 
     createJsonFromXml();
