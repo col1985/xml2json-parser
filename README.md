@@ -7,8 +7,6 @@ Module will search through directory tree structure of the given project for xml
 
 ####Why?
 
-I wrote this to help analyze request and responses in `xml` format for a project I am working on. 
-
 Why not! JSON is just easier to read! :)
 
 This is my first node module and a work in progress, however please feel to create a Pull Request or raise an issue.
