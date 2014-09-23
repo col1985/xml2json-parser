@@ -6,6 +6,9 @@
   "description": "Searchs for xml files in project, parses to JSON and writes to JSON file",
   "homepage": "https://github.com/col1985/xml2json-parser",
   "main": "xml2jsonfile.js",
+  "scripts": {
+    "test": "mocha test"
+  },
   "keywords": [
     "xml",
     "json",
@@ -25,11 +28,9 @@
     "url": "https://github.com/col1985/xml2json-parser/master/LICENSE"
   }],
   "dependencies": {
-    "xml2js": "^0.4.4",
+    "findit": "^2.0.0",
     "underscore": "^1.7.0",
-    "findit": "^2.0.0"
-  },
-  "devDependencies": {
+    "xml2js": "^0.4.4",
     "mocha": "^1.21.4"
   }
 }
