@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require('./xmlFile2JsonFile.js')();
+require('./xml2jsonfile.js')();
