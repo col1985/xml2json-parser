@@ -3,7 +3,9 @@ xml2jsonfile
 
 ###Module Description
 
-Module will search through directory tree structure of the given project for xml files. It will then parse these files to JSON, removing the `xmlns` prefix of each tag if found and returns the body of the envelope writing to a `.json` file stored in a directory called `json` at root of project.  
+Module will search through directory tree structure of the given project for xml files. It will then parse these files to JSON, removing the `xmlns` prefix of each tag if found and returns the body of the envelope writing to a `.json` file stored in a directory called `json` at root of project.
+
+The module will parse both SOAP xml files and normal xml files with attributes.  
 
 ####Why?
 
