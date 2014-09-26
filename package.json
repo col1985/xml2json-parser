@@ -1,6 +1,6 @@
 {
   "name": "xml2jsonfile",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Colúm Bennett",
   "email": "col1985@gmail.com",
   "description": "Searchs for xml files in project, parses to JSON and writes to JSON file",
