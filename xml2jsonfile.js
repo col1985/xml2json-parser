@@ -7,7 +7,7 @@
  * `xml` file, to a default `json` directory at root of project.
  */
 
-(function () {
+(function() {
 
     'use strict';
 
@@ -16,7 +16,7 @@
     var finder = require('findit')(process.argv[2] || '.');
     var path = require('path');
     var _ = require('underscore');
-    var logger = require('winston');
+    var logger = require('winston').log;
 
     /**
      * @function getXmlFilePaths
@@ -29,7 +29,7 @@
         var xmlFilePaths = [];
 
         // search for directory labeled xml
-        finder.on('directory', function (dir, stat, stop) {
+        finder.on('directory', function(dir, stat, stop) {
             if (dir === 'node_modules' || dir === '.git') {
                 stop();
             }
@@ -37,9 +37,9 @@
 
         // log out file path of xml file
         // and push to return array
-        finder.on('file', function (file) {
+        finder.on('file', function(file) {
             if (path.extname(file) == '.xml') {
-                logger.log('info', 'Xml file found :: ' + file + '\n');
+                logger('info', 'Xml file found :: ' + file + '\n');
 
                 // push file path to
                 xmlFilePaths.push(file);
@@ -48,7 +48,7 @@
 
         // on finder end event return
         // array via callback
-        finder.on('end', function () {
+        finder.on('end', function() {
             if (xmlFilePaths.length > 0) {
                 return callback(xmlFilePaths);
             } else {
@@ -66,7 +66,8 @@
      */
     function getFileName(filePath) {
         var dotIndex = filePath.indexOf('.');
-        var name = filePath.substring(filePath.length, dotIndex);
+        var lastSlash = _.lastIndexOf(filePath, '/');
+        var name = filePath.substring((lastSlash + 1), dotIndex);
         return name;
     }
 
@@ -79,11 +80,11 @@
      * @param {String} data Stringified JSON data to write to output file.
      */
     function writeJsonFile(dir, name, ext, data) {
-        fs.writeFile(dir + name + ext, data, function (err) {
+        fs.writeFile(dir + name + ext, data, function(err) {
             if (err) {
-                logger.log('error', 'Error writing json file', err);
+                logger('error', 'Error writing json file', err);
             } else {
-                logger.log('info', name + '.json has been saved!\n');
+                logger('info', name + '.json has been saved!\n');
             }
         });
     }
@@ -102,8 +103,8 @@
         var name = getFileName(fileName);
 
         // check output directory exists
+        // if not create directory
         if (!fs.existsSync(dir)) {
-            // if not create directory
             fs.mkdirSync(dir, '0777');
         }
         writeJsonFile(dir, name, ext, data);
@@ -133,24 +134,28 @@
 
         // parse a single xml file
         function parseFile(path) {
-            var fileData = fs.readFileSync(path, 'uft-8');
-            var json = null;
+            var fileData = fs.readFileSync(path, 'ascii');
+            // var fileData = fs.readFileSync(path, 'uft-8');
+            var data = null;
 
             // instantciate parser
             var parser = new xml2js.Parser({
                 trim: true,
                 normalizeTags: true,
                 ignoreAttrs: true,
-                tagNameProcessors: [formatTagName],
+                tagNameProcessors: [formatTagName]
             });
 
-            parser.parseString(fileData.substring(0, fileData.length), function (err, result) {
-                var raw = result['envelope'];
-                var body = raw['body'][0];
-
-                json = JSON.stringify(body, null, 2);
-                createOutputFiles('./json/', path, '.json', json);
-                // logger.log('File ' + path + ' was successfully read, parsed and formated.\n');
+            parser.parseString(fileData.substring(0, fileData.length), function(err, result) {
+                if (!result['envelope']) {
+                    data = JSON.stringify(result, null, 2);
+                } else {
+                    var raw = result['envelope'];
+                    var body = raw['body'][0];
+                    data = JSON.stringify(body, null, 2);
+                }
+                createOutputFiles('./json/', path, '.json', data);
+                // logger('File ' + path + ' was successfully read, parsed and formated.\n');
             });
         }
 
@@ -161,12 +166,12 @@
             // iterate over array and
             // pass xml file path to
             // parsing fn
-            _.each(filePaths, function (path) {
+            _.each(filePaths, function(path) {
                 try {
                     parseFile(path);
                 } catch (e) {
-                    logger.log('error', 'Unable to read file ' + path);
-                    logger.log('error', e);
+                    logger('error', 'Unable to read file ' + path);
+                    logger('error', e);
                 }
             });
         }
@@ -177,7 +182,11 @@
      * @desc exported function bringing all functionality together to create output files
      */
     function init() {
-        getXmlFilePaths(function (filePaths) {
+        getXmlFilePaths(function(filePaths) {
+            if (filePaths.length === 0) {
+                logger('info', 'No xml files have been found.');
+                return;
+            }
             parser(filePaths);
         });
     }
