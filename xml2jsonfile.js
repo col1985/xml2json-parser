@@ -16,6 +16,7 @@
     var finder = require('findit')(process.argv[2] || '.');
     var path = require('path');
     var _ = require('underscore');
+    var logger = require('winston');
 
     /**
      * @function getXmlFilePaths
@@ -38,7 +39,7 @@
         // and push to return array
         finder.on('file', function (file) {
             if (path.extname(file) == '.xml') {
-                console.log('Xml file found :: ' + file + '\n');
+                logger.log('info', 'Xml file found :: ' + file + '\n');
 
                 // push file path to
                 xmlFilePaths.push(file);
@@ -51,7 +52,8 @@
             if (xmlFilePaths.length > 0) {
                 return callback(xmlFilePaths);
             } else {
-                console.log('Oops!! No xml file paths to return.');
+                logger.log('error', 'Oops!! No xml file paths to return.');
+                return callback(xmlFilePaths);
             }
         });
     }
@@ -64,7 +66,7 @@
      */
     function getFileName(filePath) {
         var dotIndex = filePath.indexOf('.');
-        var name = filePath.substring(4, dotIndex);
+        var name = filePath.substring(filePath.length, dotIndex);
         return name;
     }
 
@@ -79,9 +81,9 @@
     function writeJsonFile(dir, name, ext, data) {
         fs.writeFile(dir + name + ext, data, function (err) {
             if (err) {
-                console.log('Error writing json file', err);
+                logger.log('error', 'Error writing json file', err);
             } else {
-                console.log(name + '.json has been saved!\n');
+                logger.log('info', name + '.json has been saved!\n');
             }
         });
     }
@@ -100,13 +102,11 @@
         var name = getFileName(fileName);
 
         // check output directory exists
-        if (fs.existsSync(dir)) {
-            writeJsonFile(dir, name, ext, data);
-        } else {
+        if (!fs.existsSync(dir)) {
             // if not create directory
             fs.mkdirSync(dir, '0777');
-            writeJsonFile(dir, name, ext, data);
         }
+        writeJsonFile(dir, name, ext, data);
     }
 
     /**
@@ -133,7 +133,7 @@
 
         // parse a single xml file
         function parseFile(path) {
-            var fileData = fs.readFileSync(path, 'ascii');
+            var fileData = fs.readFileSync(path, 'uft-8');
             var json = null;
 
             // instantciate parser
@@ -150,7 +150,7 @@
 
                 json = JSON.stringify(body, null, 2);
                 createOutputFiles('./json/', path, '.json', json);
-                // console.log('File ' + path + ' was successfully read, parsed and formated.\n');
+                // logger.log('File ' + path + ' was successfully read, parsed and formated.\n');
             });
         }
 
@@ -165,8 +165,8 @@
                 try {
                     parseFile(path);
                 } catch (e) {
-                    console.log('Unable to read file ' + path);
-                    console.log(e);
+                    logger.log('error', 'Unable to read file ' + path);
+                    logger.log('error', e);
                 }
             });
         }
