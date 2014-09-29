@@ -1,6 +1,8 @@
 xml2jsonfile
 ====
 
+![Build Passing](https://travis-ci.org/col1985/xml2json-parser.svg?branch=v0.0.5)
+
 ###Module Description
 
 Module will search through directory tree structure of the given project for xml files. It will then parse these files to JSON, removing the `xmlns` prefix of each tag if found and returns the body of the envelope writing to a `.json` file stored in a directory called `json` at root of project.
