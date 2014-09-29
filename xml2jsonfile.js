@@ -10,51 +10,11 @@
 'use strict';
 
 var fs = require('fs');
-var xml2js = require('xml2js');
-var finder = require('findit')(process.argv[2] || '.');
-var path = require('path');
+// var xml2js = require('xml2js');
 var _ = require('underscore');
-var logger = require('./util/logger.js');
-
-/**
- * @function getXmlFilePaths
- * @desc function recursively searchs for a directory labelled xml,
- * then checks for `.xml` files and returns array of each file path.
- * @param {method} callback method containing array of path return once criteria has been statisfied.
- * @returns {method} callback returns array of xml file paths.
- */
-function getXmlFilePaths(callback) {
-    var xmlFilePaths = [];
-
-    // search for directory labeled xml
-    finder.on('directory', function(dir, stat, stop) {
-        if (dir === 'node_modules' || dir === '.git') {
-            stop();
-        }
-    });
-
-    // log out file path of xml file
-    // and push to return array
-    finder.on('file', function(file) {
-        if (path.extname(file) === '.xml') {
-            logger('info', 'Xml file found :: ' + file + '\n');
-
-            // push file path to
-            xmlFilePaths.push(file);
-        }
-    });
-
-    // on finder end event return
-    // array via callback
-    finder.on('end', function() {
-        if (xmlFilePaths.length > 0) {
-            return callback(xmlFilePaths);
-        } else {
-            logger('error', 'Oops!! No xml file paths to return.');
-            return callback(xmlFilePaths);
-        }
-    });
-}
+var logger = require('./util/logger.js')();
+var finder = require('./util/finder.js');
+var parser = require('./util/parser.js')();
 
 /**
  * @function getFileName
@@ -77,13 +37,12 @@ function getFileName(filePath) {
  * @param {String} ext New file extension of output file.
  * @param {String} data Stringified JSON data to write to output file.
  */
-function writeJsonFile(dir, name, ext, data) {
+function writeFile(dir, name, ext, data) {
     fs.writeFile(dir + name + ext, data, function(err) {
         if (err) {
-            logger('error', 'Error writing json file', err);
-        } else {
-            logger('info', name + '.json has been saved!\n');
+            logger('error', 'Error writing ' + ext + ' file', err);
         }
+        logger('info', name + ext + ' has been saved!\n');
     });
 }
 
@@ -105,7 +64,7 @@ function createOutputFiles(dir, fileName, ext, data) {
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, '0777');
     }
-    writeJsonFile(dir, name, ext, data);
+    writeFile(dir, name, ext, data);
 }
 
 /**
@@ -115,34 +74,12 @@ function createOutputFiles(dir, fileName, ext, data) {
  * `json` string. The passes stringified data to output handler functions.
  * @param {Array} filePaths Array of strings containing absolute file paths.
  */
-function parser(filePaths) {
+function filesParser(filePaths) {
 
-    // processor function for parser
-    // to tidy tag names
-    function formatTagName(name) {
-        var index = name.indexOf(':');
-
-        if (index !== -1) {
-            var tagName = name.substr(index + 1, name.length);
-            return tagName;
-        } else {
-            return name;
-        }
-    }
-
-    // parse a single xml file
+    // // parse a single xml file
     function parseFile(path) {
         var fileData = fs.readFileSync(path, 'ascii');
-        // var fileData = fs.readFileSync(path, 'uft-8');
         var data = null;
-
-        // instantciate parser
-        var parser = new xml2js.Parser({
-            trim: true,
-            normalizeTags: true,
-            ignoreAttrs: true,
-            tagNameProcessors: [formatTagName]
-        });
 
         parser.parseString(fileData.substring(0, fileData.length), function(err, result) {
             // if normal xml
@@ -154,7 +91,6 @@ function parser(filePaths) {
                 data = JSON.stringify(body, null, 2);
             }
             createOutputFiles('./json/', path, '.json', data);
-            // logger('File ' + path + ' was successfully read, parsed and formated.\n');
         });
     }
 
@@ -172,8 +108,8 @@ function parser(filePaths) {
             }
         });
     } else {
-        // parse file pass via CLI
-        parseFile(path);
+        //  parse file passed via CLI
+        filesParser(filePaths);
     }
 }
 
@@ -181,20 +117,14 @@ function parser(filePaths) {
  * @function init
  * @desc exported function bringing all functionality together to create output files
  */
-function init(file) {
-
-    if (!file) {
-        getXmlFilePaths(function(filePaths) {
-            if (filePaths.length === 0) {
-                logger('info', 'No xml files have been found.');
-                return;
-            }
-            parser(filePaths);
-        });
-    } else {
-        // console.log('cmd:', file);
-        parser(file);
-    }
+function init() {
+    finder('.xml', function(filePathsArr) {
+        if (filePathsArr.length === 0) {
+            logger('info', 'No xml files have been found.');
+            return false;
+        }
+        filesParser(filePathsArr);
+    });
 }
 
 module.exports = init;

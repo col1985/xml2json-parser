@@ -1,23 +1,22 @@
-#!/usr/bin/env node
+// #!/usr/bin/env node
 
-var logger = require('./util/logger.js')();
+// var logger = require('./util/logger.js')();
 
-function commandHandler() {
-    var cmd = process.argv;
-    cmd.shift();
-    cmd.shift();
+// function commandHandler() {
+//     var cmd = process.argv;
+//     cmd.shift();
+//     cmd.shift();
 
-    logger('debug', 'cmd: ', cmd);
-}
+//     logger('debug', 'cmd: ', cmd);
+// }
 
-commandHandler();
-logger('info', 'current dir: ', __dirname);
-logger('info', 'current file: ', __filename);
-
+// commandHandler();
+// logger('info', 'current dir: ', __dirname);
+// logger('info', 'current file: ', __filename);
 
 
 // // var program = require('commander');
-// var xml2jsonfile = require('./xml2jsonfile.js');
+require('./xml2jsonfile.js')();
 
 // // program
 // //     .version('0.0.5')
