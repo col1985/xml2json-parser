@@ -21,7 +21,7 @@ function formatTagName(name) {
 // arg is passed
 function parserConfig(options) {
     if (!options) {
-        logger('info', 'No args passed, returning default settings..');
+        logger('info', 'No args passed, returning default settings..\n');
         return {
             trim: true,
             normalizeTags: true,
@@ -29,7 +29,7 @@ function parserConfig(options) {
             tagNameProcessors: [formatTagName]
         };
     } else {
-        logger('info', 'Received Parser config, setting Parser rules..');
+        logger('info', 'Received Parser config, setting Parser rules..\n');
         return options;
     }
 }
@@ -44,7 +44,7 @@ function initParser(parserOpts) {
         parserOpts = null;
     }
 
-    logger('info', 'Xml Parser has been called..');
+    logger('info', 'Xml Parser has been called..\n');
 
     config = parserConfig(parserOpts);
 

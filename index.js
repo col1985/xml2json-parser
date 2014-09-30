@@ -1,6 +1,6 @@
 // #!/usr/bin/env node
 
-// var logger = require('./util/logger.js')();
+var logger = require('./util/logger.js')();
 
 // function commandHandler() {
 //     var cmd = process.argv;
@@ -16,7 +16,13 @@
 
 
 // // var program = require('commander');
-require('./xml2jsonfile.js')();
+var init = require('./xml2jsonfile.js');
+
+// init();
+init('.xml', function(dataArr) {
+    logger('info', 'Hello from index');
+    logger('debug', JSON.stringify(dataArr, null, 2));
+});
 
 // // program
 // //     .version('0.0.5')

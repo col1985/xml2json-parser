@@ -10,11 +10,16 @@
 'use strict';
 
 var fs = require('fs');
-// var xml2js = require('xml2js');
 var _ = require('underscore');
 var logger = require('./util/logger.js')();
 var finder = require('./util/finder.js');
 var parser = require('./util/parser.js')();
+var EventEmitter = require('events').EventEmitter;
+
+var e = new EventEmitter();
+var returnArray = false;
+var numOfFiles = 0;
+var JSON_ARRAY = {};
 
 /**
  * @function getFileName
@@ -29,6 +34,17 @@ function getFileName(filePath) {
     return name;
 }
 
+// add item to dynamic assoc array
+function buildAssocArray(key, val, count) {
+    JSON_ARRAY[key] = JSON.parse(val);
+
+    // emit event when last parsed
+    // file has been added to array
+    if (count === numOfFiles) {
+        e.emit('Array Ready');
+    }
+}
+
 /**
  * @function writeJsonFile
  * @desc Writes data to single file to a specified directory
@@ -40,7 +56,7 @@ function getFileName(filePath) {
 function writeFile(dir, name, ext, data) {
     fs.writeFile(dir + name + ext, data, function(err) {
         if (err) {
-            logger('error', 'Error writing ' + ext + ' file', err);
+            logger('error', 'Error writing ' + name + ext + ' file.\n');
         }
         logger('info', name + ext + ' has been saved!\n');
     });
@@ -57,14 +73,12 @@ function writeFile(dir, name, ext, data) {
  * @param {String} data Stringified JSON data to write to output file.
  */
 function createOutputFiles(dir, fileName, ext, data) {
-    var name = getFileName(fileName);
-
     // check output directory exists
     // if not create directory
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, '0777');
     }
-    writeFile(dir, name, ext, data);
+    writeFile(dir, fileName, ext, data);
 }
 
 /**
@@ -77,34 +91,43 @@ function createOutputFiles(dir, fileName, ext, data) {
 function filesParser(filePaths) {
 
     // // parse a single xml file
-    function parseFile(path) {
+    function parseFile(path, counter) {
+        var fileName = getFileName(path);
         var fileData = fs.readFileSync(path, 'ascii');
-        var data = null;
+        var parsedData = null;
 
         parser.parseString(fileData.substring(0, fileData.length), function(err, result) {
+
             // if normal xml
             if (!result['envelope']) {
-                data = JSON.stringify(result, null, 2);
+                parsedData = JSON.stringify(result, null, 2);
             } else {
                 var raw = result['envelope'];
                 var body = raw['body'][0];
-                data = JSON.stringify(body, null, 2);
+                parsedData = JSON.stringify(body, null, 2);
             }
-            createOutputFiles('./json/', path, '.json', data);
+
+            if (returnArray) {
+                buildAssocArray(fileName, parsedData, counter);
+            } else {
+                createOutputFiles('./json/', fileName, '.json', parsedData);
+            }
         });
     }
 
     // some defensive checking
-    if (filePaths instanceof Array) {
+    if (filePaths.length > 1) {
         // iterate over array and
         // pass xml file path to
         // parsing fn
+        var count = 0;
         _.each(filePaths, function(path) {
+            count++;
+
             try {
-                parseFile(path);
+                parseFile(path, count);
             } catch (e) {
-                logger('error', 'Unable to read file ' + path);
-                logger('error', e);
+                logger('error', 'Unable to read file ' + path + '.\n');
             }
         });
     } else {
@@ -117,14 +140,47 @@ function filesParser(filePaths) {
  * @function init
  * @desc exported function bringing all functionality together to create output files
  */
-function init() {
-    finder('.xml', function(filePathsArr) {
-        if (filePathsArr.length === 0) {
-            logger('info', 'No xml files have been found.');
-            return false;
-        }
-        filesParser(filePathsArr);
-    });
+function init(extType, callback) {
+
+    // set default extension if
+    // not specified
+    extType = extType || '.xml';
+
+    // if callback passed return parsed data
+    // in form of object of objects
+    if (callback && typeof callback === 'function') {
+        logger('info', 'callback has been detected, returning Assoc array of results.\n');
+        returnArray = true;
+
+        // return array once last file parsed
+        e.on('Array Ready', function() {
+            return callback(JSON_ARRAY);
+        });
+
+        // search for files with extension
+        finder(extType, function(filePathsArr) {
+            if (filePathsArr.length === 0) {
+                logger('error', 'No xml files have been found.\n');
+                return false;
+            }
+
+            // control var used to emit event
+            // when last file parsed
+            numOfFiles = filePathsArr.length;
+
+            filesParser(filePathsArr);
+        });
+    } else {
+        // no callback passed
+        finder(extType, function(filePathsArr) {
+            if (filePathsArr.length === 0) {
+                logger('error', 'No xml files have been found.\n');
+                return false;
+            }
+
+            filesParser(filePathsArr);
+        });
+    }
 }
 
 module.exports = init;
