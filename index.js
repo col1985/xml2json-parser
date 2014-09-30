@@ -18,11 +18,11 @@ var logger = require('./util/logger.js')();
 // // var program = require('commander');
 var init = require('./xml2jsonfile.js');
 
-// init();
-init('.xml', function(dataArr) {
-    logger('info', 'Hello from index');
-    logger('debug', JSON.stringify(dataArr, null, 2));
-});
+init();
+// init('.xml', function(dataArr) {
+//     logger('info', 'Hello from index');
+//     logger('debug', JSON.stringify(dataArr, null, 2));
+// });
 
 // // program
 // //     .version('0.0.5')
