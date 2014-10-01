@@ -1,6 +1,6 @@
 // #!/usr/bin/env node
 
-var logger = require('./util/logger.js')();
+// var logger = require('./util/logger.js')();s
 
 // function commandHandler() {
 //     var cmd = process.argv;

@@ -1,4 +1,5 @@
---reporter list 
---recursive
---ui bdd 
+--reporter list
+--ui tdd
 --growl
+--timeout 4000
+--debug
