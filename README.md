@@ -1,7 +1,7 @@
-xml2jsonfile
-====
+# xml2jsonfile  
 
 ![Build Passing](https://travis-ci.org/col1985/xml2json-parser.svg?branch=master)
+[![NPM version](https://badge.fury.io/js/xml2jsonfile.svg)](http://badge.fury.io/js/xml2jsonfile)
 
 ###Module Description
 
